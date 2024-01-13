@@ -25,10 +25,10 @@
 </div>
 </body>
 <script type="module">
-    import GUI from "./js/lil-gui.esm.js";
     import {createHDCanvas} from "./js/createHDCanvas.js";
     import {drawSquare} from "./js/drawSquare.js";
     import {keyControl} from "./js/keyControl.js";
+    import {gui, gui_controls} from "./js/guiControl.js";
 
     const cvs = document.getElementById("tetris");
     const ctx = cvs.getContext("2d");
@@ -50,7 +50,6 @@
         }
     }
 
-    drawBoard()
 
     class Food {
         constructor() {
@@ -163,15 +162,7 @@
         }
     }
 
-    function addControl() {
-        let gui = new GUI();
-        document.body.appendChild(gui.domElement);
-        gui_controls = {
-            speed: 1
-        };
-        gui.add(gui_controls, 'speed', 0, 10);
-    }
-
+    document.body.appendChild(gui.domElement);
     document.addEventListener("keydown", function (event) {
         keyControl(event, the_snake)
     });
@@ -179,8 +170,6 @@
 
     let food = new Food();
     let the_snake = new Snake();
-    let gui_controls;
-
     let dropStart = Date.now();
     let gameOver = false;
 
@@ -202,7 +191,7 @@
         }
     }
 
-    addControl();
+    drawBoard();
     init();
 
 
