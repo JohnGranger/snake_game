@@ -74,16 +74,16 @@
 
     class Snake {
         constructor() {
+            // snake的初始坐标
             this.snake = [{x: 3, y: 3}, {x: 2, y: 3}, {x: 1, y: 3}];
+            // snake的初始方向
+            // x表示左右，正值为右，负值为左
+            // y表示上下，正值为下，负值为上
             this.direction = [1, 0];
         }
 
         fill(color) {
-            for (let i = 0; i < this.snake.length; i++) {
-                let x = this.snake[i].x;
-                let y = this.snake[i].y;
-                drawSquare(ctx, x, y, color, SQUARE_SIZE)
-            }
+            this.snake.map((item) => drawSquare(ctx, item.x, item.y, color, SQUARE_SIZE))
         }
 
         draw() {
@@ -107,33 +107,23 @@
             // 将蛇头，按照贪吃蛇的移动方向增加一个格子
             this.snake[0].x += this.direction[0]
             this.snake[0].y += this.direction[1]
-
             this.draw();
-            console.log(this.snake[0].x)
         }
 
         moveDown() {
-            if (!this.collision() && this.direction[1] !== -1) {
-                this.direction = [0, 1]
-            }
+            !this.collision() && this.direction[1] !== -1 ? this.direction = [0, 1] : null;
         }
 
         moveRight() {
-            if (!this.collision() && this.direction[0] !== -1) {
-                this.direction = [1, 0]
-            }
+            !this.collision() && this.direction[0] !== -1 ? this.direction = [1, 0] : null;
         }
 
         moveLeft() {
-            if (!this.collision() && this.direction[0] !== 1) {
-                this.direction = [-1, 0]
-            }
+            !this.collision() && this.direction[0] !== 1 ? this.direction = [-1, 0] : null;
         }
 
         moveUp() {
-            if (!this.collision() && this.direction[1] !== 1) {
-                this.direction = [0, -1]
-            }
+            !this.collision() && this.direction[1] !== 1 ? this.direction = [0, -1] : null;
         }
 
         isEatFood() {
@@ -149,7 +139,7 @@
                     y: this.snake[this.snake.length - 1].y
                 })
                 // 其实这里不用food.unDraw()，因为snake吃到food，snake自身就会unDraw()，会覆盖food
-                food.unDraw();
+                // food.unDraw();
                 food = new Food();
                 food.draw();
             }
@@ -160,10 +150,16 @@
         }
 
         eatSelf() {
+            let eat = false;
             let snakeHeader = this.snake[0];
-            this.snake.slice(1, this.snake.length).forEach((item) => {
-                return snakeHeader.x === item.x && snakeHeader.y === item.y;
-            })
+
+            for (let item of this.snake.slice(1, this.snake.length)) {
+                if (snakeHeader.x === item.x && snakeHeader.y === item.y) {
+                    eat = true;
+                    break
+                }
+            }
+            return eat;
         }
     }
 
