@@ -64,10 +64,6 @@
         draw() {
             this.fill("red")
         }
-
-        unDraw() {
-            this.fill("white")
-        }
     }
 
 
@@ -149,16 +145,7 @@
         }
 
         eatSelf() {
-            let eat = false;
-            let snakeHeader = this.snake[0];
-
-            for (let item of this.snake.slice(1, this.snake.length)) {
-                if (snakeHeader.x === item.x && snakeHeader.y === item.y) {
-                    eat = true;
-                    break
-                }
-            }
-            return eat;
+            return this.snake.slice(1, this.snake.length).some(item => this.snake[0].x === item.x && this.snake[0].y === item.y)
         }
     }
 
