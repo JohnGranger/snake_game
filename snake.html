@@ -4,7 +4,7 @@
     <meta charSet="utf-8"/>
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
-    <title>Funds</title>
+    <title>Snake Game</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="py-5">
@@ -155,22 +155,16 @@
         }
 
         collision() {
-            if (this.snake[0].x < 0 || this.snake[0].x > COL || this.snake[0].y < 0 || this.snake[0].y > ROW) {
-                gameOver = true
-            }
+            return this.snake[0].x < 0 || this.snake[0].x > COL || this.snake[0].y < 0 || this.snake[0].y > ROW
         }
 
         eatSelf() {
             let snakeHeader = this.snake[0];
             this.snake.slice(1, this.snake.length).forEach((item) => {
-                snakeHeader.x === item.x && snakeHeader.y === item.y ? gameOver = true : null;
+                return snakeHeader.x === item.x && snakeHeader.y === item.y;
             })
         }
     }
-
-    let food = new Food();
-    let the_snake = new Snake();
-    let gui_controls;
 
     function addControl() {
         let gui = new GUI();
@@ -181,7 +175,15 @@
         gui.add(gui_controls, 'speed', 0, 10);
     }
 
-    addControl();
+    document.addEventListener("keydown", function (event) {
+        keyControl(event, the_snake)
+    });
+
+
+    let food = new Food();
+    let the_snake = new Snake();
+    let gui_controls;
+
     let dropStart = Date.now();
     let gameOver = false;
 
@@ -189,23 +191,23 @@
         food.draw();
         let now = Date.now();
         let delta = now - dropStart;
-        if (delta > 1000 / gui_controls.speed && !the_snake.collision() && !the_snake.eatSelf()) {
+        gameOver = the_snake.collision() || the_snake.eatSelf();
+        if (!gameOver) {
+            requestAnimationFrame(init);
+        } else {
+            alert("Game Over!")
+            window.location.reload();
+        }
+        if (delta > 300 / gui_controls.speed) {
             the_snake.move();
             the_snake.addNewBody();
             dropStart = Date.now();
         }
-        if (!gameOver) {
-            requestAnimationFrame(init);
-        } else {
-            alert("游戏结束！")
-            window.location.reload();
-        }
     }
 
+    addControl();
     init();
-    document.addEventListener("keydown", function (event) {
-        keyControl(event, the_snake)
-    });
+
 
 </script>
 </html>
