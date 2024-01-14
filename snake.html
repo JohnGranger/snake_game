@@ -119,6 +119,7 @@
             this.draw();
         }
 
+        // 控制移动方向
         moveDown() {
             !this.collision() && this.direction[1] !== -1 ? this.direction = [0, 1] : null;
         }
@@ -135,14 +136,18 @@
             !this.collision() && this.direction[1] !== 1 ? this.direction = [0, -1] : null;
         }
 
+        // 判断是否吃到food
         isEatFood() {
             return this.snake[0].x === food.x && this.snake[0].y === food.y;
         }
 
         addNewBody() {
             if (this.isEatFood()) {
+                // 显示分数
                 score += 10;
                 scoreElement.innerHTML = `Scores:${score}`;
+                // 将最后一截body添加给snake
+                // 这里之所以是length - 1，是因为吃到食物的同时还是在move向前1格的
                 this.snake.push({
                     x: this.snake[this.snake.length - 1].x,
                     y: this.snake[this.snake.length - 1].y
@@ -154,41 +159,42 @@
             }
         }
 
+        // 撞到墙检测
         collision() {
             return this.snake[0].x < 0 || this.snake[0].x > COL || this.snake[0].y < 0 || this.snake[0].y > ROW;
         }
 
+        // 吃到自己检测
         eatSelf() {
             return this.snake.slice(1, this.snake.length).some(item => this.snake[0].x === item.x && this.snake[0].y === item.y);
         }
     }
 
+    // 将gui控制添加到页面
     document.body.appendChild(gui.domElement);
+    // 键盘事件
     document.addEventListener("keydown", function (event) {
-        keyControl(event, the_snake);
+        keyControl(event, snake);
     });
 
     createHDCanvas(cvs, ctx);
+    // 初始化
     let food = new Food();
-    let the_snake = new Snake();
+    let snake = new Snake();
     let dropStart = Date.now();
-    let isGameOver = false;
     let score = 0;
 
     function init() {
         food.draw();
         let now = Date.now();
         let delta = now - dropStart;
-        isGameOver = the_snake.collision() || the_snake.eatSelf();
-        if (!isGameOver) {
-            requestAnimationFrame(init);
-        } else {
-            alert("Game Over!")
-            window.location.reload();
-        }
+        !(snake.collision() || snake.eatSelf()) ? requestAnimationFrame(init) : (() => {
+            alert("Game Over!");
+            window.location.reload()
+        })();
         if (delta > 300 / gui_controls.speed) {
-            the_snake.move();
-            the_snake.addNewBody();
+            snake.move();
+            snake.addNewBody();
             dropStart = Date.now();
         }
     }
