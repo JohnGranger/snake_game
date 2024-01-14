@@ -41,36 +41,40 @@
     const SQUARE_SIZE = 25;
     const ROW = 20;
     const COL = 20;
-    const VACANT = "white"
+    const VACANT = "#FFFFFF";
 
     // 绘制面板函数
     function drawBoard() {
         for (let r = 0; r < ROW; r++) {
             for (let c = 0; c < COL; c++) {
                 // 之所以用board[r][c]的颜色是因为board存了lock之后的颜色，即已经落下去的方块的颜色
-                drawSquare(ctx, c, r, VACANT, SQUARE_SIZE)
+                drawSquare(ctx, c, r, VACANT, SQUARE_SIZE);
             }
         }
     }
 
 
     class Food {
+        // 初始化food的位置
         constructor() {
             this.x = Math.round(Math.random() * (ROW - 1));
             this.y = Math.round(Math.random() * (COL - 1));
         }
 
+        // 用color填充food
         fill(color) {
-            drawSquare(ctx, this.x, this.y, color, SQUARE_SIZE)
+            drawSquare(ctx, this.x, this.y, color, SQUARE_SIZE);
         }
 
-        draw() {
-            this.fill("red")
+        // 绘制food
+        draw(color = "#FF0000") {
+            this.fill(color);
         }
     }
 
 
     class Snake {
+        // 初始化snake的坐标和方向
         constructor() {
             // snake的初始坐标
             this.snake = [{x: 3, y: 3}, {x: 2, y: 3}, {x: 1, y: 3}];
@@ -80,31 +84,38 @@
             this.direction = [1, 0];
         }
 
+        // 使用color填充snake
         fill(color) {
-            this.snake.map((item) => drawSquare(ctx, item.x, item.y, color, SQUARE_SIZE))
+            this.snake.map((item) => drawSquare(ctx, item.x, item.y, color, SQUARE_SIZE));
         }
 
-        draw() {
-            this.fill("blue")
+        // 绘制snake
+        draw(color = "#0000FF") {
+            this.fill(color);
         }
 
+        // 移除snake
         unDraw() {
-            this.fill(VACANT)
+            this.fill(VACANT);
         }
 
+        // 移动snake
         move() {
+            // 先移除
             this.unDraw();
+            // 然后移动
             // 除贪吃蛇蛇头，每一截蛇身的位置等于前一个蛇身的位置 ， 蛇身数组的0号单元就是蛇头，其余是蛇身
             // 循环贪吃蛇蛇身数组
             for (let i = this.snake.length - 1; i > 0; i--) {
                 // 让每一截蛇身的位置等于他的前一截蛇身的位置
-                this.snake[i].x = this.snake[i - 1].x
-                this.snake[i].y = this.snake[i - 1].y
+                this.snake[i].x = this.snake[i - 1].x;
+                this.snake[i].y = this.snake[i - 1].y;
             }
 
             // 将蛇头，按照贪吃蛇的移动方向增加一个格子
-            this.snake[0].x += this.direction[0]
-            this.snake[0].y += this.direction[1]
+            this.snake[0].x += this.direction[0];
+            this.snake[0].y += this.direction[1];
+            // 移动后绘制新的
             this.draw();
         }
 
@@ -144,32 +155,32 @@
         }
 
         collision() {
-            return this.snake[0].x < 0 || this.snake[0].x > COL || this.snake[0].y < 0 || this.snake[0].y > ROW
+            return this.snake[0].x < 0 || this.snake[0].x > COL || this.snake[0].y < 0 || this.snake[0].y > ROW;
         }
 
         eatSelf() {
-            return this.snake.slice(1, this.snake.length).some(item => this.snake[0].x === item.x && this.snake[0].y === item.y)
+            return this.snake.slice(1, this.snake.length).some(item => this.snake[0].x === item.x && this.snake[0].y === item.y);
         }
     }
 
     document.body.appendChild(gui.domElement);
     document.addEventListener("keydown", function (event) {
-        keyControl(event, the_snake)
+        keyControl(event, the_snake);
     });
 
-    createHDCanvas(cvs, ctx)
+    createHDCanvas(cvs, ctx);
     let food = new Food();
     let the_snake = new Snake();
     let dropStart = Date.now();
-    let gameOver = false;
+    let isGameOver = false;
     let score = 0;
 
     function init() {
         food.draw();
         let now = Date.now();
         let delta = now - dropStart;
-        gameOver = the_snake.collision() || the_snake.eatSelf();
-        if (!gameOver) {
+        isGameOver = the_snake.collision() || the_snake.eatSelf();
+        if (!isGameOver) {
             requestAnimationFrame(init);
         } else {
             alert("Game Over!")
@@ -184,7 +195,5 @@
 
     drawBoard();
     init();
-
-
 </script>
 </html>
