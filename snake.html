@@ -25,22 +25,25 @@
 </div>
 </body>
 <script type="module">
+    // 引入自定义函数
     import {createHDCanvas} from "./js/createHDCanvas.js";
     import {drawSquare} from "./js/drawSquare.js";
     import {keyControl} from "./js/keyControl.js";
+    // 引入gui库，控制speed
     import {gui, gui_controls} from "./js/guiControl.js";
 
+    // 获取canvas和分数区域
     const cvs = document.getElementById("tetris");
     const ctx = cvs.getContext("2d");
-    createHDCanvas(cvs, ctx)
     const scoreElement = document.getElementById("score");
 
+    // 定义常量
     const SQUARE_SIZE = 25;
     const ROW = 20;
     const COL = 20;
     const VACANT = "white"
-    let score = 0;
 
+    // 绘制面板函数
     function drawBoard() {
         for (let r = 0; r < ROW; r++) {
             for (let c = 0; c < COL; c++) {
@@ -154,11 +157,12 @@
         keyControl(event, the_snake)
     });
 
-
+    createHDCanvas(cvs, ctx)
     let food = new Food();
     let the_snake = new Snake();
     let dropStart = Date.now();
     let gameOver = false;
+    let score = 0;
 
     function init() {
         food.draw();
